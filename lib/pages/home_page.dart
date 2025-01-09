@@ -13,10 +13,11 @@ import 'package:fintechapp/constants/constants.dart';
 import 'package:fintechapp/pages/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'Earning_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -62,6 +63,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +83,24 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          _buildSectionHeader("Earnings", "See All", () {}),
+          _buildSectionHeader(
+            "Earnings",
+            "Add",
+            () async {
+              final newEarning = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEarningPage(),
+                ),
+              );
+
+              if (newEarning != null) {
+                setState(() {
+                  earnings.add(newEarning);
+                });
+              }
+            },
+          ),
           _buildEarningsList(),
           _buildSectionHeader(
             "Savings",
@@ -115,7 +134,6 @@ class _HomePageState extends State<HomePage> {
                   "Good Morning!",
                   style: TextStyle(fontSize: 12),
                 ),
-                
                 Text(
                   "$userName",
                   style: TextStyle(
@@ -225,18 +243,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> updateBalance(String userId, double totalBalance, double income, double outcome) async {
-  try {
-    await _firestore.collection('users').doc(userId).set({
-      'totalBalance': totalBalance,
-      'income': income,
-      'outcome': outcome,
-    }, SetOptions(merge: true));
-  } catch (e) {
-    print('Error updating balance: $e');
+  Future<void> updateBalance(
+      String userId, double totalBalance, double income, double outcome) async {
+    try {
+      await _firestore.collection('users').doc(userId).set({
+        'totalBalance': totalBalance,
+        'income': income,
+        'outcome': outcome,
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('Error updating balance: $e');
+    }
   }
-}
-
+double income = 20000; // Initial income
+double outcome = 17000; 
   Widget _buildIncomeOutcomeCard() {
     return Container(
       width: double.maxFinite,
@@ -358,19 +378,28 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<Map<String, dynamic>> earnings = [
+    {"name": "Upwork", "price": "3,000", "color": Fred},
+    {"name": "Freepik", "price": "3,000", "color": Fpink},
+    {"name": "Envato", "price": "2,000", "color": Fblue},
+  ];
   Widget _buildEarningsList() {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(left: 20, bottom: 20),
         child: SizedBox(
           height: 130,
-          child: ListView(
+          child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            children: const [
-              BuildEarningItems(name: "Upwork", price: "3,000", color: Fred),
-              BuildEarningItems(name: "Freepik", price: "3,000", color: Fpink),
-              BuildEarningItems(name: "Envato", price: "2,000", color: Fblue),
-            ],
+            itemCount: earnings.length,
+            itemBuilder: (context, index) {
+              final earning = earnings[index];
+              return BuildEarningItems(
+                name: earning["name"],
+                price: earning["price"],
+                color: earning["color"],
+              );
+            },
           ),
         ),
       ),

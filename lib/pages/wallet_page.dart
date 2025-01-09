@@ -75,7 +75,7 @@ class WalletPage extends StatelessWidget {
                       ),
                       const BuildItemWallet(
                         bgColor: Fwhite,
-                        name: "Zarror Nibros",
+                        name: "Visa Card",
                         expirationDate: "09/23",
                         numberCard: "12343456",
                         price: "10,000.00",

@@ -103,14 +103,7 @@ class BuildItemWallet extends StatelessWidget {
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Name",
-                          style: TextStyle(
-                            fontFamily: "Inter",
-                            fontSize: 10,
-                            color: Color(0XFFCFCFCF),
-                          ),
-                        ),
+                        
                         Text(
                           "Exp",
                           style: TextStyle(
